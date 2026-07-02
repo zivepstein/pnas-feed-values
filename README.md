@@ -1,6 +1,20 @@
-# PNAS Feed Values
+# Value misalignment of X’s feed algorithm is a reflection of value tensions in engagement
 
 Replication code and data for analyzing how Schwartz human values relate to social-media content amplification and engagement. The repository contains R scripts that reproduce paper figures and run the underlying statistical models.
+
+## Citation
+
+If you use this code or data, please cite:
+
+```bibtex
+@article{epsteinforthcomingvalue,
+  title   = {Value misalignment of {X}'s feed algorithm is a reflection of value tensions in engagement},
+  author  = {Epstein, Ziv and Jahanbakhsh, Farnaz and Piccardi, Tiziano and Peytavin, Axel and Gallegos, Isabel and Sapkota, Shardul and Zhao, Dora and Ugander, Johan and Bernstein, Michael S.},
+  journal = {Proceedings of the National Academy of Sciences},
+  year    = {2026},
+  note    = {Forthcoming}
+}
+```
 
 ## Repository structure
 
@@ -13,7 +27,6 @@ pnas-feed-values/
 │   └── utils.R                      # Shared helpers (paths, SE, alignment)
 └── data/
     ├── amplification_data.csv                    # Aggregated amplification coefficients (29 rows)
-    ├── amplification_data_disaggregated.csv      # Tweet-level data (~2.95M rows, ~2.2 GB)
     ├── global_engagement_results.csv             # Platform-wide engagement metrics by value
     ├── individual_engagement_results.csv         # Individual-level engagement coefficients
     └── postfeed_clean.csv                        # Cleaned survey responses with value inventories
@@ -34,8 +47,6 @@ Install dependencies with:
 ```r
 install.packages(c("fmsb", "tidyverse", "ggplot2", "parameters", "lme4", "car", "multcomp"))
 ```
-
-**Note:** `amplification_inventory.R` loads `amplification_data_disaggregated.csv` (~2.2 GB). Ensure sufficient RAM and disk space before running.
 
 ## Usage
 
@@ -75,14 +86,10 @@ Survey data from participants who completed a Schwartz value inventory and socia
 - 19 value scores (`Thought` through `Dependability`)
 - Perceived value content (`value_perceptions_1`–`value_perceptions_19`)
 - Partisanship (`DemRep_C`: Democrats coded ≤ 3, Republicans > 3 in `fig_2.R`)
-- `InterfaceID` for linking to tweet-level data
-
-### `amplification_data_disaggregated.csv`
-
-Tweet-level observations with predicted value scores (`val3_*_yhat`), marginal effects (`val3_*_marginal`), engagement counts, and amplification indicators (`is_amplified`).
+- `InterfaceID` for linking participants to feed-level records
 
 ## Analysis overview
 
-1. **`fig_1.R`** — Bar chart of cluster-level amplification (rows 20–23 of `amplification_data.csv`) and a radar chart of value-level PCA amplification coefficients.
+1. **`fig_1.R`** — Bar chart of category-level amplification (rows 20–23 of `amplification_data.csv`) and a radar chart of value-level PCA amplification coefficients.
 2. **`fig_2.R`** — Computes Spearman correlations between each participant's normalized value profile and amplification/engagement coefficient vectors, then plots mean alignment by party and funnel stage.
 3. **`amplification_inventory.R`** — Fits binomial GLMMs (`glmer`) predicting `is_amplified` from Schwartz value scores, with user random effects. Tests marginal amplification hypotheses via `glht()`.
