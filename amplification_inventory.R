@@ -15,18 +15,16 @@ local({
 })
 
 options(timeout = 3000)
-ampdata_clean <- read.csv("https://www.dropbox.com/scl/fi/fdtwe774awauh2ecsnf6o/amplification_data_disaggregated.csv?rlkey=160c58kzxiheybwn00qe94ae6&st=vt0w7sv4&dl=1")
+ampdata_clean_ <- read.csv("https://www.dropbox.com/scl/fi/dueymb3npbe0bjjoiwnfz/ampdata_dropbox.csv?rlkey=rb9pyndtt4tqswhkio1hkcee3&st=3dwfoa5s&dl=1")
 
-d <- ampdata_clean %>% group_by(user_id) %>% summarize(amp = mean(is_amplified), g= sum(is_amplified), n=n())
+ampdata_clean_$user_id <- ampdata_clean_$InterfaceID
   
 #facet 1: base rates
-means_inventory<-unlist(lapply(ampdata_clean %>% dplyr::select(val3_face_yhat:val3_tolerance_yhat,user_id) %>% group_by(user_id)%>%summarize_all(mean), mean))
-se_inventory<-unlist(lapply(ampdata_clean %>% dplyr::select(val3_face_yhat:val3_tolerance_yhat,user_id) %>% group_by(user_id)%>%summarize_all(mean), se))
+means_inventory<-unlist(lapply(ampdata_clean_ %>% dplyr::select(val3_face_yhat:val3_tolerance_yhat,user_id) %>% group_by(user_id)%>%summarize_all(mean), mean))
+se_inventory<-unlist(lapply(ampdata_clean_ %>% dplyr::select(val3_face_yhat:val3_tolerance_yhat,user_id) %>% group_by(user_id)%>%summarize_all(mean), se))
 
 pca <- prcomp(ampdata_clean %>% dplyr::select(val3_face_yhat:val3_tolerance_yhat))
 summary(pca); plot(pca)
-pca$x[,1:4]
-
 
 pcadat <- data.frame(pca$x[,1:5],is_amplified=ampdata_clean$is_amplified, user_id= ampdata_clean$user_id)
 pc_model <- (glmer(as.formula("is_amplified ~PC1+(PC2)+(PC3)+(PC4)+ (1 | user_id)"), data=pcadat, family='binomial'))
