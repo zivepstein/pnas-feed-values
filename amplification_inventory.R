@@ -14,7 +14,10 @@ local({
   source(file.path(root, "R", "utils.R"))
 })
 
-ampdata_clean <- read.csv(data_path("amplification_data_disaggregated.csv"))
+options(timeout = 3000)
+ampdata_clean <- read.csv("https://www.dropbox.com/scl/fi/fdtwe774awauh2ecsnf6o/amplification_data_disaggregated.csv?rlkey=160c58kzxiheybwn00qe94ae6&st=vt0w7sv4&dl=1")
+
+d <- ampdata_clean %>% group_by(user_id) %>% summarize(amp = mean(is_amplified), g= sum(is_amplified), n=n())
   
 #facet 1: base rates
 means_inventory<-unlist(lapply(ampdata_clean %>% dplyr::select(val3_face_yhat:val3_tolerance_yhat,user_id) %>% group_by(user_id)%>%summarize_all(mean), mean))
